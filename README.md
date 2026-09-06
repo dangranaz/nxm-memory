@@ -1,57 +1,57 @@
 # nxm-memory
 
-**nxm-memory** è un motore di memoria e ricerca locale per assistenti AI (agenti di coding). Indicizza un intero progetto sul tuo computer e lo rende interrogabile in linguaggio naturale, per codice e documenti, senza mandare nulla nel cloud. Espone i suoi strumenti tramite il protocollo **MCP (Model Context Protocol)**, quindi si collega ad agenti come Claude Code, Cursor, Kiro e simili. Tutto gira in locale: veloce, privato, sempre disponibile.
+**nxm-memory** is a local memory and search engine for AI coding assistants. It indexes an entire project on your own machine and makes it queryable in natural language — across code and documents — without sending anything to the cloud. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Cursor, Kiro, and others. Everything runs locally: fast, private, always available.
 
 ---
 
-## 1. Installazione locale
+## 1. Local installation
 
-Un solo comando. Rileva automaticamente il tuo sistema (macOS Apple Silicon o Linux x86_64), scarica il binario e lo installa in `~/.local/bin`:
+One command. It auto-detects your system (macOS Apple Silicon or Linux x86_64), downloads the binary, and installs it to `~/.local/bin`:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/dangranaz/nxm-memory/main/install.sh | sh
 ```
 
-Al **primo avvio**, il programma scarica automaticamente il modello di embedding (~200 MB) e la libreria ONNX Runtime necessaria. Non devi scaricare nient'altro manualmente.
+On **first run**, the program automatically downloads the embedding model (~200 MB) and the required ONNX Runtime library. There is nothing else to download by hand.
 
-Se `~/.local/bin` non è nel tuo `PATH`, aggiungilo:
+If `~/.local/bin` is not on your `PATH`, add it:
 
 ```sh
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Piattaforme supportate: **macOS arm64** (Apple Silicon) e **Linux x86_64**.
+Supported platforms: **macOS arm64** (Apple Silicon) and **Linux x86_64**.
 
 ---
 
-## 2. Come farlo funzionare
+## 2. Getting it running
 
-Avvia il server puntandolo alla cartella del tuo progetto (workspace). Alla partenza scansiona la cartella e ne costruisce l'indice:
+Start the server pointing it at your project folder (the workspace). On startup it scans the folder and builds its index:
 
 ```sh
-nxm-mcp-server --w /percorso/del/tuo/progetto --port 7169
+nxm-mcp-server --w /path/to/your/project --port 7169
 ```
 
-Il server resta in ascolto e tiene l'indice aggiornato automaticamente quando i file cambiano. Per fermarlo:
+The server stays running and keeps the index up to date automatically as files change. To stop it:
 
 ```sh
 nxm-mcp-server --stop
 ```
 
-### Escludere cartelle dall'indice con `.nxmignore`
+### Excluding folders from the index with `.nxmignore`
 
-Crea un file **`.nxmignore`** nella radice del progetto per dire a nxm-memory quali cartelle e file **non** indicizzare. La sintassi è quella di `.gitignore`. Questo è importante: senza esclusioni finirebbero nell'indice cartelle enormi e inutili (dipendenze, build, artefatti), rallentando tutto e sporcando i risultati di ricerca.
+Create a **`.nxmignore`** file at the root of your project to tell nxm-memory which folders and files **not** to index. The syntax is the same as `.gitignore`. This matters: without exclusions, huge and useless folders (dependencies, build output, artifacts) would end up in the index, slowing everything down and polluting search results.
 
-Esempio di `.nxmignore` consigliato:
+Recommended `.nxmignore` example:
 
 ```gitignore
-# Dipendenze e pacchetti
+# Dependencies and packages
 node_modules/
 vendor/
 .venv/
 venv/
 
-# Output di build e artefatti
+# Build output and artifacts
 target/
 dist/
 build/
@@ -59,91 +59,91 @@ out/
 *.min.js
 *.min.css
 
-# Version control e cache
+# Version control and caches
 .git/
 .cache/
 __pycache__/
 
-# File di lock e binari
+# Lock files and logs
 *.lock
 *.log
 ```
 
-Regole utili:
-- una riga per pattern; `#` inizia un commento;
-- una `/` finale (es. `build/`) esclude solo le cartelle;
-- `!pattern` ri-include qualcosa escluso prima;
-- la cartella dati `.nxm/` è **sempre** esclusa in automatico (l'indice non ingerisce mai il proprio stato).
+Useful rules:
+- one pattern per line; `#` starts a comment;
+- a trailing `/` (e.g. `build/`) matches directories only;
+- `!pattern` re-includes something excluded earlier;
+- the data folder `.nxm/` is **always** excluded automatically (the index never ingests its own state).
 
-### Collegarlo a un agente AI
+### Connecting it to an AI agent
 
-Per usarlo dentro un agente (Claude Code, Cursor, Kiro…), si usa il trasporto `stdio`, con l'agente che gestisce il ciclo di vita del processo:
+To use it inside an agent (Claude Code, Cursor, Kiro…), use the `stdio` transport, with the agent managing the process lifecycle:
 
 ```sh
-nxm-mcp-server --w /percorso/del/tuo/progetto --transport stdio
+nxm-mcp-server --w /path/to/your/project --transport stdio
 ```
 
 ---
 
-## 3. La tecnologia e la struttura della memoria (in parole semplici)
+## 3. The technology and the memory model (in plain terms)
 
-Immagina nxm-memory come **una memoria a lungo termine per il tuo assistente AI**, dedicata a un progetto.
+Think of nxm-memory as **long-term memory for your AI assistant**, dedicated to a project.
 
-Quando gli dai una cartella, la legge tutta e la scompone in piccoli pezzi ("chunk"). Di ogni pezzo conserva due cose: le **parole esatte** che contiene e il suo **significato**. Il significato viene catturato con un modello di embedding (una rete neurale che trasforma il testo in numeri, così che testi che vogliono dire cose simili risultino "vicini"). In questo modo puoi cercare sia una parola precisa, sia un concetto espresso con parole diverse da quelle nel codice.
+When you give it a folder, it reads everything and breaks it into small pieces ("chunks"). For each piece it stores two things: the **exact words** it contains and its **meaning**. Meaning is captured with an embedding model (a neural network that turns text into numbers, so that texts meaning similar things end up "close" together). This way you can search either for a precise word or for a concept expressed with words different from those in the code.
 
-La ricerca combina tre approcci — corrispondenza esatta, ricerca per parole chiave e ricerca per significato — e ne fonde i risultati per darti le risposte più pertinenti in cima.
+Search combines three approaches — exact match, keyword search, and meaning-based search — and blends their results to surface the most relevant answers at the top.
 
-La memoria è organizzata in **quattro tipi**, come funziona quella umana:
+Memory is organized into **four types**, much like human memory:
 
-- **Semantica** — fatti, regole e preferenze stabili (es. "questo progetto usa Rust", "preferisco i test prima del codice").
-- **Episodica** — eventi e sessioni: cosa è successo e quando.
-- **Procedurale** — competenze e procedure: come si fa una certa cosa in questo progetto.
-- **Prospettica** — attività da fare e promemoria futuri.
+- **Semantic** — stable facts, rules, and preferences (e.g. "this project uses Rust", "I prefer tests before code").
+- **Episodic** — events and sessions: what happened and when.
+- **Procedural** — skills and procedures: how a given thing is done in this project.
+- **Prospective** — tasks to do and future reminders.
 
-Tutto vive sul tuo computer, in una cartella `.nxm/` dentro il progetto. Niente lascia la tua macchina.
-
----
-
-## 4. A cosa serve, cosa indicizza, e gli strumenti
-
-### Scopo
-
-nxm-memory dà a un assistente AI **memoria persistente e ricerca istantanea** su un progetto: ritrova la funzione giusta, il documento pertinente o la decisione presa settimane fa, senza dover ri-leggere tutto ogni volta. Crea e mantiene **l'indice** del progetto e risponde alle interrogazioni dell'agente.
-
-### Cosa indicizza
-
-Alla partenza (e a ogni modifica dei file) **crea l'indice** del workspace. L'indicizzazione è incrementale: rielabora solo i file effettivamente cambiati.
-
-- **Codice**: Rust, Python, JavaScript/TypeScript (`.rs`, `.py`, `.js`, `.jsx`, `.ts`, `.tsx`), più `.sh`, `.sql`, `.proto`, `.graphql`, `.html`, `.css`.
-- **Documenti**: Markdown (`.md`, `.mdx`), PDF, testo (`.txt`, `.rst`, `.adoc`).
-- **Configurazioni**: `.toml`, `.yaml`/`.yml`, `.json`, `.ini`, `.cfg`.
-
-Le cartelle elencate in `.nxmignore` vengono saltate (vedi sezione 2).
-
-### Gli strumenti (tool MCP)
-
-Il server espone questi strumenti all'agente AI:
-
-| Strumento | A cosa serve |
-|-----------|--------------|
-| `index_workspace` | Indicizza o re-indicizza un workspace (full o incrementale automatico). |
-| `index_search` | Ricerca ibrida (significato + parole chiave + fusione) su tutto l'indicizzato. |
-| `search_code` | Cerca solo nei file di codice, con filtri per linguaggio e percorso. |
-| `search_docs` | Cerca solo nei documenti (PDF, Markdown, TXT). |
-| `search_exact` | Ricerca di sottostringa esatta, velocissima, senza embedding. |
-| `search_regex` | Ricerca con espressioni regolari. |
-| `get_chunk` | Recupera il contenuto completo di un pezzo tramite ID (caricamento on-demand). |
-| `find_symbol` | Trova la definizione di un simbolo (funzione, struct, classe…). |
-| `outline` | Elenca i simboli principali di un file. |
-| `find_references` | Trova tutti gli utilizzi di un simbolo in un progetto. |
-| `memory_remember` | Salva un fatto, un evento, una competenza o un'attività in memoria. |
-| `memory_recall` | Cerca in memoria fatti, eventi e competenze pertinenti. |
-| `context_compress` | Comprime testo (file, output shell, cronologia chat) per risparmiare token. |
-| `context_budget` | Calcola l'allocazione ottimale del contesto per una data finestra. |
-| `workspace_list` / `workspace_create` | Elenca / crea i workspace configurati. |
-| `stats` | Statistiche dell'indice (file indicizzati, chunk, storage). |
-| `watcher_status` | Stato del watcher automatico dei file. |
+Everything lives on your computer, in a `.nxm/` folder inside the project. Nothing leaves your machine.
 
 ---
 
-_Il codice sorgente è mantenuto privatamente. Questo repository distribuisce i binari e l'installer; il modello di embedding è distribuito separatamente e scaricato automaticamente al primo avvio._
+## 4. Purpose, what it indexes, and the tools
+
+### Purpose
+
+nxm-memory gives an AI assistant **persistent memory and instant search** over a project: it retrieves the right function, the relevant document, or the decision made weeks ago, without having to re-read everything each time. It builds and maintains **the index** of the project and answers the agent's queries.
+
+### What it indexes
+
+On startup (and whenever files change) it **builds the index** of the workspace. Indexing is incremental: only files that actually changed are reprocessed.
+
+- **Code**: Rust, Python, JavaScript/TypeScript (`.rs`, `.py`, `.js`, `.jsx`, `.ts`, `.tsx`), plus `.sh`, `.sql`, `.proto`, `.graphql`, `.html`, `.css`.
+- **Documents**: Markdown (`.md`, `.mdx`), PDF, plain text (`.txt`, `.rst`, `.adoc`).
+- **Configuration**: `.toml`, `.yaml`/`.yml`, `.json`, `.ini`, `.cfg`.
+
+Folders listed in `.nxmignore` are skipped (see section 2).
+
+### The tools (MCP tools)
+
+The server exposes these tools to the AI agent:
+
+| Tool | What it does |
+|------|--------------|
+| `index_workspace` | Index or re-index a workspace (automatic full/incremental). |
+| `index_search` | Hybrid search (meaning + keywords + fusion) across everything indexed. |
+| `search_code` | Search code files only, with language and path filters. |
+| `search_docs` | Search documents only (PDF, Markdown, TXT). |
+| `search_exact` | Exact substring search, very fast, no embedding needed. |
+| `search_regex` | Search with regular expressions. |
+| `get_chunk` | Retrieve the full content of a chunk by ID (on-demand loading). |
+| `find_symbol` | Find the definition of a symbol (function, struct, class…). |
+| `outline` | List the top-level symbols of a file. |
+| `find_references` | Find all uses of a symbol across a project. |
+| `memory_remember` | Store a fact, event, skill, or task in memory. |
+| `memory_recall` | Search memory for relevant facts, events, and skills. |
+| `context_compress` | Compress text (file content, shell output, chat history) to save tokens. |
+| `context_budget` | Compute the optimal context allocation for a given window. |
+| `workspace_list` / `workspace_create` | List / create configured workspaces. |
+| `stats` | Index statistics (files indexed, chunks, storage). |
+| `watcher_status` | Status of the automatic file watcher. |
+
+---
+
+_The source code is maintained privately. This repository distributes the binaries and the installer; the embedding model is distributed separately and downloaded automatically on first run._
