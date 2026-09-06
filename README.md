@@ -1,8 +1,10 @@
 # nxm-memory
 
-**nxm-memory** is a local memory and search engine for AI assistants. Although it works great for coding projects, it is not limited to code — it can index and search any collection of files: documentation, notes, research, contracts, knowledge bases, and more. It indexes an entire workspace on your own machine and makes it queryable in natural language, without sending anything to the cloud. It reads the documents in your workspace and gives you fast, relevant answers about them. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Opencode, Pi, and others.
+**nxm-memory** is a local memory and search engine for AI assistants. Although it works great for coding projects, it is not limited to code — it can index and search any collection of files: documentation, notes, research, contracts, knowledge bases, and more. It indexes an entire workspace on your own machine and makes it queryable in natural language, without sending anything to the cloud. It reads the documents in your workspace and gives you fast, relevant answers about them. It also **cuts the number of tokens** sent to the model with a built-in context-compression engine — one of its most valuable features. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Opencode, Pi, and others.
 
 > [!IMPORTANT]
+> **⭐ Token reduction to cut cost and fit more in context — one of the most important features.** nxm-memory compresses file contents, shell output, and chat history before they reach the model.
+>
 > **It is configured exactly like any other MCP server.** **Everything runs locally: fast, private, always available.**
 
 ---
