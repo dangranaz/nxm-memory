@@ -38,6 +38,10 @@ and no data leaving the machine.
   current automatically as files change.
 - **Connects.** Speaks the Model Context Protocol, so it plugs into a wide range
   of AI agents, harnesses, and any MCP-compatible tool — several of them at once.
+- **Saves tokens.** A built-in context-compression engine shrinks file contents,
+  shell output, and chat history before they reach the model — cutting token usage
+  (and cost) while preserving errors and the important parts. One of its most
+  valuable features for keeping long agent sessions inside the context window.
 
 ---
 
