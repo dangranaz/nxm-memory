@@ -122,6 +122,8 @@ Memory is organized into **four types**, much like human memory:
 - **Procedural** — skills and procedures: how a given thing is done in this project.
 - **Prospective** — tasks to do and future reminders.
 
+It has been tested on workspaces of **tens of gigabytes** mixing documents and code (hundreds of thousands of files). And it does not stop after the first scan: it stays running in the **background**, constantly keeping the **vector database** up to date — every file you add to or change in the workspace is picked up and re-indexed automatically.
+
 Everything lives on your computer, in a `.nxm/` folder inside the project. Nothing leaves your machine.
 
 ---
