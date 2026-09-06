@@ -134,6 +134,9 @@ Everything lives on your computer, in a `.nxm/` folder inside the project. Nothi
 
 nxm-memory gives an AI assistant **persistent memory and instant search** over a project: it retrieves the right function, the relevant document, or the decision made weeks ago, without having to re-read everything each time. It builds and maintains **the index** of the project and answers the agent's queries.
 
+> [!IMPORTANT]
+> **Token reduction — one of the most valuable features.** nxm-memory includes a built-in **context-compression** engine (`context_compress`) that shrinks file contents (into structural maps), shell output, and chat history before they reach the model. It reports how many tokens it saved (`tokens_before` / `tokens_after` / `reduction_pct`), keeping long agent sessions inside the context window and cutting cost — while preserving errors and the important parts.
+
 ### What it indexes
 
 On startup (and whenever files change) it **builds the index** of the workspace. Indexing is incremental: only files that actually changed are reprocessed.
@@ -162,7 +165,7 @@ The server exposes these tools to the AI agent:
 | `find_references` | Find all uses of a symbol across a project. |
 | `memory_remember` | Store a fact, event, skill, or task in memory. |
 | `memory_recall` | Search memory for relevant facts, events, and skills. |
-| `context_compress` | Compress text (file content, shell output, chat history) to save tokens. |
+| `context_compress` | **Reduce token usage**: compress file content (into structural maps), shell output, or chat history — reports tokens saved. One of the most useful tools. |
 | `context_budget` | Compute the optimal context allocation for a given window. |
 | `workspace_list` / `workspace_create` | List / create configured workspaces. |
 | `stats` | Index statistics (files indexed, chunks, storage). |
