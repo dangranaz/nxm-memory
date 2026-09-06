@@ -139,6 +139,17 @@ nxm-memory gives an AI assistant **persistent memory and instant search** over a
 > [!IMPORTANT]
 > **Token reduction — one of the most valuable features.** nxm-memory includes a built-in **context-compression** engine (`context_compress`) that shrinks file contents (into structural maps), shell output, and chat history before they reach the model. It reports how many tokens it saved (`tokens_before` / `tokens_after` / `reduction_pct`), keeping long agent sessions inside the context window and cutting cost — while preserving errors and the important parts.
 
+**Example** — compressing a real source file into its structural map:
+
+```text
+context_compress (mode: file)
+  tokens_before: 3050
+  tokens_after :  416
+  reduction    :   87%  saved
+```
+
+That is 2634 tokens saved on a single file — multiplied across every file, shell output, and chat turn an agent handles in a session.
+
 ### What it indexes
 
 On startup (and whenever files change) it **builds the index** of the workspace. Indexing is incremental: only files that actually changed are reprocessed.
@@ -172,6 +183,12 @@ The server exposes these tools to the AI agent:
 | `workspace_list` / `workspace_create` | List / create configured workspaces. |
 | `stats` | Index statistics (files indexed, chunks, storage). |
 | `watcher_status` | Status of the automatic file watcher. |
+
+---
+
+## ⭐ Support the project
+
+If nxm-memory saves you tokens, time, or keeps your data private, please **give the repository a star** and share it — it is the simplest way to help the project grow and reach other developers. Feedback and suggestions are welcome via issues.
 
 ---
 
