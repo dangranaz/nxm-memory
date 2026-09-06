@@ -25,9 +25,9 @@ export PATH="$HOME/.local/bin:$PATH"
 
 Supported platforms: **macOS arm64** (Apple Silicon) and **Linux x86_64**.
 
-### Configure it in your MCP client
+### Configure it in your agents, harnesses, and any MCP-compatible tool
 
-nxm-memory is a standard MCP server, so you register it like any other. Here is an example for **OpenCode** — add it to your `opencode.json` (global) or `opencode.jsonc` under the `mcp` key. Point `--w` at the project you want indexed:
+nxm-memory is a standard MCP server, so you can configure it in your agents, your harnesses, and any tool that supports the MCP standard. Here is an example for **OpenCode** — add it to your `opencode.json` (global) or `opencode.jsonc` under the `mcp` key. Point `--w` at the project you want indexed:
 
 ```jsonc
 {
