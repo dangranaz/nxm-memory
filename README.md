@@ -1,6 +1,9 @@
 # nxm-memory
 
-**nxm-memory** is a local memory and search engine for AI coding assistants. It indexes an entire project on your own machine and makes it queryable in natural language — across code and documents — without sending anything to the cloud. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Cursor, Kiro, and others. Everything runs locally: fast, private, always available.
+**nxm-memory** is a local memory and search engine for AI coding assistants. It indexes an entire project on your own machine and makes it queryable in natural language — across code and documents — without sending anything to the cloud. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Opencode, Pi, and others.
+
+> [!IMPORTANT]
+> **It is configured exactly like any other MCP server.** **Everything runs locally: fast, private, always available.**
 
 ---
 
@@ -21,6 +24,25 @@ export PATH="$HOME/.local/bin:$PATH"
 ```
 
 Supported platforms: **macOS arm64** (Apple Silicon) and **Linux x86_64**.
+
+### Configure it in your MCP client
+
+nxm-memory is a standard MCP server, so you register it like any other. Here is an example for **OpenCode** — add it to your `opencode.json` (global) or `opencode.jsonc` under the `mcp` key. Point `--w` at the project you want indexed:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "nxm-memory": {
+      "type": "local",
+      "command": ["nxm-mcp-server", "--w", "/path/to/your/project", "--transport", "stdio"],
+      "enabled": true
+    }
+  }
+}
+```
+
+The configuration follows the same pattern in other agents (Claude Code, Pi, Cursor, Kiro…): a local MCP server whose command is `nxm-mcp-server` with `--transport stdio`.
 
 ---
 
