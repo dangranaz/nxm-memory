@@ -73,6 +73,41 @@ else
   say "no checksum sidecar found — skipping verification"
 fi
 
+# --- stop a running server before replacing the binary --------------------
+# The daemon binds the fixed port 7169 (single-owner policy). Overwriting the
+# binary while it runs leaves the OLD version live until it is restarted, so we
+# stop it first and tell the user. Port 7169 is the version-independent signal
+# that an instance is active.
+NXM_PORT=7169
+port_in_use() {
+  if command -v lsof >/dev/null 2>&1; then
+    lsof -nP -iTCP:"$NXM_PORT" -sTCP:LISTEN >/dev/null 2>&1
+  elif command -v nc >/dev/null 2>&1; then
+    nc -z 127.0.0.1 "$NXM_PORT" >/dev/null 2>&1
+  else
+    return 1  # can't tell — assume free
+  fi
+}
+
+if port_in_use; then
+  say "a nxm-memory server is running on port $NXM_PORT — stopping it before update"
+  if [ -x "$BIN_DIR/$BIN_NAME" ]; then
+    "$BIN_DIR/$BIN_NAME" --stop >/dev/null 2>&1 || true
+  elif command -v "$BIN_NAME" >/dev/null 2>&1; then
+    "$BIN_NAME" --stop >/dev/null 2>&1 || true
+  fi
+  # Give it a moment to release the port.
+  i=0
+  while port_in_use && [ "$i" -lt 10 ]; do sleep 1; i=$((i + 1)); done
+  if port_in_use; then
+    err "could not stop the running server on port $NXM_PORT.
+   Stop it manually, then re-run the installer:
+     $BIN_NAME --stop        # or: nxm-memory-stop.sh"
+  fi
+  say "server stopped"
+  NXM_WAS_RUNNING=1
+fi
+
 # --- unpack + install ------------------------------------------------------
 say "unpacking"
 tar -C "$TMP" -xzf "$TMP/pkg.tar.gz"
@@ -90,4 +125,7 @@ case ":$PATH:" in
 esac
 
 say "done. First run downloads the embedding model (~200 MB) automatically."
+if [ "${NXM_WAS_RUNNING:-0}" = "1" ]; then
+  printf '\033[1;33mNOTE:\033[0m the previous server was stopped for the update — restart it:\n'
+fi
 printf '  Start a workspace:  %s --w <path-to-project> --port 7169\n' "$BIN_NAME"
