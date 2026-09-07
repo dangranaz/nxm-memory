@@ -1,9 +1,9 @@
 # nxm-memory
 
-**nxm-memory** is a local memory and search engine for AI assistants. Although it works great for coding projects, it is not limited to code — it can index and search any collection of files: documentation, notes, research, contracts, knowledge bases, and more. It indexes an entire workspace on your own machine and makes it queryable in natural language, without sending anything to the cloud. It reads the documents in your workspace and gives you fast, relevant answers about them. It also **cuts the number of tokens** sent to the model with a built-in context-compression engine — one of its most valuable features. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Opencode, Pi, and others.
+**nxm-memory** is a local memory and search engine for AI assistants. Although it works great for coding projects, it is not limited to code — it can index and search any collection of files: documentation, notes, research, contracts, knowledge bases, and more. It indexes an entire workspace on your own machine and makes it queryable in natural language, without sending anything to the cloud. It reads the documents in your workspace and gives you fast, relevant answers about them. It also **cuts the number of tokens** sent to the model: it compresses **source code** into structural maps, plus shell output and chat history, and — crucially for documents — it retrieves only the **relevant chunks** via search instead of loading whole files. It exposes its tools through the **Model Context Protocol (MCP)**, so it plugs into agents like Claude Code, Opencode, Pi, and others.
 
 > [!IMPORTANT]
-> **⭐ Token reduction to cut cost and fit more in context — one of the most important features.** nxm-memory compresses file contents, shell output, and chat history before they reach the model.
+> **⭐ Token reduction to cut cost and fit more in context — one of the most important features.** nxm-memory compresses **source code** (into structural maps), shell output, and chat history before they reach the model. For **prose documents** (Markdown, text, PDF), it saves tokens by **searching and returning only the relevant chunks** rather than compressing whole files. A dedicated semantic document-compression mode is on the roadmap.
 >
 > **It is configured exactly like any other MCP server.** **Everything runs locally: fast, private, always available.**
 
@@ -137,7 +137,7 @@ Everything lives on your computer, in a `.nxm/` folder inside the project. Nothi
 nxm-memory gives an AI assistant **persistent memory and instant search** over a project: it retrieves the right function, the relevant document, or the decision made weeks ago, without having to re-read everything each time. It builds and maintains **the index** of the project and answers the agent's queries.
 
 > [!IMPORTANT]
-> **Token reduction — one of the most valuable features.** nxm-memory includes a built-in **context-compression** engine (`context_compress`) that shrinks file contents (into structural maps), shell output, and chat history before they reach the model. It reports how many tokens it saved (`tokens_before` / `tokens_after` / `reduction_pct`), keeping long agent sessions inside the context window and cutting cost — while preserving errors and the important parts.
+> **Token reduction — one of the most valuable features.** nxm-memory includes a built-in **context-compression** engine (`context_compress`) that shrinks **source code** (into structural maps), shell output, and chat history before they reach the model. It reports how many tokens it saved (`tokens_before` / `tokens_after` / `reduction_pct`), keeping long agent sessions inside the context window and cutting cost — while preserving errors and the important parts. For **prose documents** (Markdown/text/PDF) it does not yet compress semantically; use `search_docs` / `index_search` to load only the relevant chunks. A semantic document-compression mode is planned (see roadmap).
 
 **Example** — compressing a real source file into its structural map:
 
@@ -178,7 +178,7 @@ The server exposes these tools to the AI agent:
 | `find_references` | Find all uses of a symbol across a project. |
 | `memory_remember` | Store a fact, event, skill, or task in memory. |
 | `memory_recall` | Search memory for relevant facts, events, and skills. |
-| `context_compress` | **Reduce token usage**: compress file content (into structural maps), shell output, or chat history — reports tokens saved. One of the most useful tools. |
+| `context_compress` | **Reduce token usage**: compress source code (into structural maps), shell output, or chat history — reports tokens saved. For prose documents, prefer `search_docs`/`index_search`. One of the most useful tools. |
 | `context_budget` | Compute the optimal context allocation for a given window. |
 | `workspace_list` / `workspace_create` | List / create configured workspaces. |
 | `stats` | Index statistics (files indexed, chunks, storage). |
