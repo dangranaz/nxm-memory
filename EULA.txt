@@ -1,0 +1,65 @@
+nxm-memory — End User License Agreement (Personal Use)
+
+Copyright © 2026 Daniele Oddo. All rights reserved.
+
+This End User License Agreement ("Agreement") governs your use of the compiled
+binary program "nxm-mcp-server" and any accompanying files distributed with it
+(together, the "Software"). The Software's source code is NOT covered by this
+Agreement and is not made available; it remains proprietary and confidential.
+
+By downloading, installing, or using the Software, you agree to these terms. If
+you do not agree, do not download, install, or use the Software.
+
+1. GRANT OF LICENSE (PERSONAL, NON-COMMERCIAL)
+   The copyright holder grants you a personal, non-exclusive, non-transferable,
+   revocable license to install and run the Software solely for your own
+   personal, non-commercial purposes — such as personal study, experimentation,
+   private use, and hobby projects — with no anticipated commercial application.
+
+2. RESTRICTIONS
+   You may NOT:
+   (a) use the Software for any commercial purpose, or on behalf of, or for the
+       benefit of, any business, employer, or organization;
+   (b) sell, rent, lease, sublicense, distribute, publish, or otherwise make the
+       Software available to any third party;
+   (c) modify, adapt, translate, or create derivative works of the Software;
+   (d) reverse engineer, decompile, or disassemble the Software, or attempt to
+       derive its source code, except to the extent this restriction is
+       prohibited by applicable law;
+   (e) remove or alter any copyright, trademark, or other proprietary notices.
+
+3. RESERVATION OF RIGHTS
+   The Software is licensed, not sold. All rights not expressly granted here are
+   reserved by the copyright holder. No rights to the source code are granted.
+
+4. THIRD-PARTY COMPONENTS
+   The Software includes third-party open-source components licensed under their
+   own terms (MIT, Apache-2.0, BSD, ISC, and others). Those components remain
+   governed by their respective licenses, which are reproduced in the
+   accompanying THIRD-PARTY-NOTICES file. Nothing in this Agreement limits your
+   rights under those licenses with respect to those components.
+
+   On first run, the Software may download additional third-party artifacts
+   (an embedding model and the ONNX Runtime library) directly from their
+   respective providers; those artifacts are subject to their own licenses.
+
+5. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+6. LIMITATION OF LIABILITY
+   TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL THE COPYRIGHT
+   HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN
+   ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. TERMINATION
+   This license terminates automatically if you breach any of its terms. Upon
+   termination you must cease all use of the Software and delete all copies.
+
+8. GOVERNING LAW
+   This Agreement is governed by the laws of Italy, without regard to its
+   conflict-of-laws provisions.
+
+For commercial licensing inquiries, contact the copyright holder.
