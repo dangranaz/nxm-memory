@@ -9,6 +9,14 @@
 
 ---
 
+## Demo
+
+See nxm-memory in action:
+
+![nxm-memory demo](docs/assets/demo.gif)
+
+---
+
 ## 1. Local installation
 
 One command. It auto-detects your system (macOS Apple Silicon or Linux x86_64), downloads the binary, and installs it to `~/.local/bin`:
